@@ -31,6 +31,6 @@ $(function(){
 </div>
 <hr/>
 <div id="body_main">
-main
+
 </div>
 </td>
