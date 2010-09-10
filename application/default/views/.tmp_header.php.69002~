@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Shrimp Project Mangement System</title>
+		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery.cookie.js"></script>
+		<script type="text/javascript" src="js/tabber-minimized.js"></script>
+		
+		<link rel="stylesheet" href="theme/default/header.css" type="text/css" >
+		<link rel="stylesheet" href="theme/default/body_left.css" type="text/css" >
+		<link rel="stylesheet" href="theme/default/body_right.css" type="text/css" >
+		<link rel="stylesheet" href="theme/default/footer.css" type="text/css" >
+		<link rel="stylesheet" href="theme/default/tabber.css" type="text/css" >
+	</head>
+<body>
+<div class="header">
+	<div class="logo"></div>
+	<div class="top_nav"></div>
+</div>
+<div class="body">
+<table id="body_table" cellspacing="2" cellpadding="2">
+	<tr>
