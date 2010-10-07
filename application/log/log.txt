@@ -1,0 +1,9 @@
+2010-10-05T01:23:18+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:150) ID:
+2010-10-05T01:41:31+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:150) User Values: id=>name=>test2pwd=>1234role=>Keytrue name=>12345
+2010-10-05T02:05:57+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:150) User Values: id=>name=>test2pwd=>1234role=>Keytrue name=>12345
+2010-10-05T02:15:04+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:150) User Values: id=>name=>test2pwd=>1234role=>Keytrue name=>12345
+2010-10-05T02:16:25+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:150) User Values: id=>name=>test2pwd=>1234role=>Keytrue name=>12345
+2010-10-05T02:16:25+00:00 pid(3468) INFO (6): Zend_Db_Adapter_Abstract::query (line:466) DESCRIBE `users`
+2010-10-05T02:16:25+00:00 pid(3468) INFO (6): Zend_Db_Adapter_Abstract::query (line:466) INSERT INTO `users` (`id`, `name`, `pwd`, `role`, `true_name`) VALUES (?, ?, ?, ?, ?)
+2010-10-05T02:18:10+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:152) User Values: id=>name=>test2pwd=>1234role=>Keytrue name=>12345
+2010-10-05T02:18:42+00:00 pid(3468) INFO (6): SP_User_Model_User::save (line:152) User Values: id=>name=>test4pwd=>234324role=>Keytrue name=>3424324

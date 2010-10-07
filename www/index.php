@@ -29,20 +29,14 @@ or implied, of VictorLi (luckylzs@gmail.com).
 define('SP_ENTRY',true);
 
 define('SP_ROOT_PATH',realpath(dirname(__FILE__).'/../'));
+define('SP_APP_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'application');
+define('SP_CONFIG_PATH',SP_APP_PATH . DIRECTORY_SEPARATOR . 'config');
+define('SP_LIB_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'library');
+define('SP_WWW_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'www');
+define('SP_APP_ENV',(getenv('SP_APP_ENV'))?getenv('SP_APP_ENV'):'product');
+require_once SP_LIB_PATH . DIRECTORY_SEPARATOR . 'SP' . DIRECTORY_SEPARATOR . 'Application.php';
 
-define('SP_CORE_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'application');
+$app = new SP_Application(SP_APP_ENV,SP_CONFIG_PATH . DIRECTORY_SEPARATOR . 'application.ini');
 
-define('SP_LIB_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'libs');
-
-define('SP_CACHE_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'cache');
-
-define('SP_CONFIG_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'config');
-
-define('SP_APP_SECTION','product');
-
-define('SP_LOCALE_PATH',SP_ROOT_PATH . DIRECTORY_SEPARATOR . 'locale');
-
-require_once SP_LIB_PATH . DIRECTORY_SEPARATOR . 'SProject.php';
-
-SProject::getInstance()->run();
+$app->run();
 ?>

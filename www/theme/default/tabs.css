@@ -10,6 +10,7 @@ div#tabs ul{
 	list-style-type:none;
 	margin:0 0;
 	padding-top:2px;
+	padding-left:20px;
 }
 
 div#tabs ul li{
@@ -24,6 +25,8 @@ div#tabs ul li a{
 	border:1px solid black;
 	padding:2px 4px;
 	padding-bottom:0px;
+	-moz-border-radius-topleft:5px;
+	-moz-border-radius-topright:5px;
 }
 
 div#tabs div#tab_content_containner{

@@ -1,0 +1,24 @@
+<?php echo $this->docType();?>
+<html>
+	<head>
+	<?php echo $this->headTitle();?>
+	<?php echo $this->headScript();?>
+	<?php echo $this->headLink();?>
+	</head>
+<body>
+<div class="header">
+<?php echo $this->layout()->header;?>
+</div>
+<div class="content">
+	<div class="sidebar">
+		<?php echo $this->layout()->sidebar;?>
+	</div>
+	<div class="main_body">
+		<?php echo $this->layout()->content;?>
+	</div>
+</div>
+<div class="footer">
+<?php echo $this->partial("footer.phtml");?>
+</div>
+</body>
+</html>

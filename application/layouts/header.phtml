@@ -1,0 +1,26 @@
+<div class="logo"></div>
+<div class="top_nav">
+	<div class="top_login">
+		<?php if($this->hasLogin):?>
+			<?php echo $this->welcome ?>,&nbsp;
+			<?php echo $this->user_name ?>&nbsp;[<a href="/user/logout"><?php echo $this->logout ?></a>]&nbsp;|&nbsp;
+			<a href="/user/<?php echo $this->user_id ?>"><?php echo $this->account?></a>&nbsp;|
+			<?php if($this->user_role == 'admin'):?>
+				<a href="/admin"><?php echo $this->admin?></a>&nbsp;|
+			<?php endif;?>
+		<?php else:?>
+			<a href="/user/login"><?php echo $this->login ?></a>
+		<?php endif;?>
+	</div>
+	<div class="top_search">
+		<input type="text" value="" name="search" >
+		<input type="button" value="Search">
+	</div>
+	<div class="top_menu">
+	<ul>
+		<?php foreach($this->menu as $value):?>
+		<li><a href="<?php echo $value['link']?>"><?php echo $value['label']?></a></li>
+		<?php endforeach;?>
+	</ul>
+	</div>
+</div>
