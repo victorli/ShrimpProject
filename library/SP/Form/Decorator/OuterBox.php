@@ -26,37 +26,60 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_View_Helper_ActionBar extends Zend_View_Helper_Abstract{
-	
-	protected $type = 'a';
-	protected $action_str = "";
-	
-	public function __construct(){}
-	
-	public function actionBar($options = null){
-		if(is_null($options))
-			return $this;
-			
-		if(!is_array($options))
-			throw new Exception('Array needed for the argument');
-		if(key_exists('type',$options))
-			$this->type = $options['type'];
-
-		if(!key_exists('actions',$options))
-			throw new Exception('Key "actions" needed');
-		foreach($options['actions'] as $action){
-			if($this->type == 'a'){
-				$this->action_str .="<a href='".$action['link']."'>".$action['label']."</a>&nbsp;&nbsp;";
-			}else if($this->type == 'button'){
-				$this->action_str .="<button onclick=\"javascript:window.location='".$action['link']."'\">".$action['label']."</button>&nbsp;&nbsp;";
+class SP_Form_Decorator_OuterBox
+	extends Zend_Form_Decorator_Abstract
+{
+	public function render($content){
+		$options = $this->getOptions();
+		$box = "<div ";
+		if(isset($options['attrs'])){
+			foreach($options['attrs'] as $attr => $value){
+				$box .=$attr."='".$value."' ";
 			}
 		}
 		
-		return $this;
+		$box .=">";
+		$title = "";
+		if(isset($options['title'])){
+			$title .= "<h3>".$options['title']."</h3><hr>";
+		}
+		
+		$error = "";
+		$errors = $this->getErrMessages();
+		if(count($errors)){
+			$error .="<ul class='errors'>";
+			foreach($errors as $key=>$value){
+				$error .="<li>".$key.":";
+				foreach($value as $e){
+					$error .=$e.",";
+				}
+				$error = substr($error,0,-1);
+				$error .="</li>";
+			}
+			
+			$error .="</ul>";
+		}
+		if($this->getPlacement() === parent::APPEND)
+			$output = $box . $title . $content . $error . "</div>";
+		else
+			$output = $box . $title . $error . $content . "</div>";
+		
+		return $output;
 	}
-	
-	public function __toString(){
-		return "<div class='action-bar'>".$this->action_str."</div>";
+	/**
+	 * Get all error messages array
+	 * @return Array $errors
+	 */
+	public function getErrMessages(){
+		$errors = array();
+		$element = $this->getElement();
+		foreach($element->getElements() as $el){
+			$err = $el->getMessages();
+			if(count($err))
+				$errors[$el->getLabel()] = $err;
+		}
+		
+		return $errors;
 	}
 }
 

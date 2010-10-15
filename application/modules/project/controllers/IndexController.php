@@ -29,7 +29,49 @@ or implied, of VictorLi (luckylzs@gmail.com).
 
 class Project_IndexController extends SP_Controller_Action{
 	
-	function indexAction(){
+	public function indexAction(){
+		$this->_redirect('project/list/1');
+	}
+	
+	public function listAction(){
+		$this->view->actionBar(array(
+			'type'=>'button',
+			'actions'=>array(
+				array('label'=>'Create Project','link'=>'project/edit'),
+				array('label'=>'Export','link'=>'project/export')
+			)
+		));
+		
+		$project = new SP_Project_Model_Project();
+		if(!is_null($project->fetchAll())){
+			$this->view->htmlTable(array(
+							'table'=>array('class'=>'sortable','cellpadding'=>'2','cellspacing'=>1,'width'=>'100%'),
+							'thead'=>array('title'=>'click to sort'),
+							'checkbox'=>true
+							))
+					   ->setView($this->view)
+					   ->headTitle(array())
+					   ->body($this->_helper->Paginator($project->fetchAll(),true,15,$this->_getParam('page',1)))
+					   ->footBar(array('Delete'=>'delete','Export'=>'export'));
+		}
+		
+		$this->getResponse()->insert('content',$this->render(null,null,true));
+		
+	}
+	
+	public function editAction(){
+		
+	}
+	
+	public function saveAction(){
+		
+	}
+	
+	public function deleteAction(){
+		
+	}
+	
+	public function exportAction(){
 		
 	}
 }

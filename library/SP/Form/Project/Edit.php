@@ -26,37 +26,10 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_View_Helper_ActionBar extends Zend_View_Helper_Abstract{
+class SP_Form_Project_Edit extends SP_Form{
 	
-	protected $type = 'a';
-	protected $action_str = "";
-	
-	public function __construct(){}
-	
-	public function actionBar($options = null){
-		if(is_null($options))
-			return $this;
-			
-		if(!is_array($options))
-			throw new Exception('Array needed for the argument');
-		if(key_exists('type',$options))
-			$this->type = $options['type'];
-
-		if(!key_exists('actions',$options))
-			throw new Exception('Key "actions" needed');
-		foreach($options['actions'] as $action){
-			if($this->type == 'a'){
-				$this->action_str .="<a href='".$action['link']."'>".$action['label']."</a>&nbsp;&nbsp;";
-			}else if($this->type == 'button'){
-				$this->action_str .="<button onclick=\"javascript:window.location='".$action['link']."'\">".$action['label']."</button>&nbsp;&nbsp;";
-			}
-		}
+	public function init(){
 		
-		return $this;
-	}
-	
-	public function __toString(){
-		return "<div class='action-bar'>".$this->action_str."</div>";
 	}
 }
 

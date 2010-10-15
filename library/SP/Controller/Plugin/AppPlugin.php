@@ -29,6 +29,18 @@ or implied, of VictorLi (luckylzs@gmail.com).
 
 class SP_Controller_Plugin_AppPlugin extends Zend_Controller_Plugin_Abstract{
 	
+	public function routeShutdown(Zend_Controller_Request_Abstract  $request){
+		/*$front = Zend_Controller_Front::getInstance();
+		if(!$front->getDispatcher()->isDispatchable($request)){
+			if($request->getActionName() == 'index'){
+				$request->setActionName($request->getControllerName())
+						->setControllerName('index');
+			}
+		}
+		
+		var_dump($request);*/
+	}
+	
 	public function preDispatch($request){
 		$view = SP_Application::getView();
 		$translator = Zend_Registry::get('Zend_Translate');
@@ -49,7 +61,7 @@ class SP_Controller_Plugin_AppPlugin extends Zend_Controller_Plugin_Abstract{
 		}else{
 			$view->hasLogin = false;
 			$view->login = $translator->_('Login');
-			if($this->_request->getModuleName()!= 'user' && $this->_request->getActionName()!='login'){
+			if($this->_request->getModuleName() != 'user' || $this->_request->getActionName() !='login'){
 				Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl('/user/login');
 			}
 		}

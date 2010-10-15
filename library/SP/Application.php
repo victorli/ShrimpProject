@@ -127,6 +127,7 @@ class SP_Application{
 		self::_setAuthAdapter();
 		self::_setLayout();
 		self::_setTranslate();
+		self::_setActionHelper();
 		
 		$front = Zend_Controller_Front::getInstance();
 		$front->setRouter(self::$_router)
@@ -251,6 +252,17 @@ class SP_Application{
 				)
 			);
 			
+			$route_project_list = new Zend_Controller_Router_Route_Regex(
+				'project/list/(\d+)',
+				array(
+					'controller'=>'Index',
+					'action'=>'list',
+					'module'=>'project'
+				),
+				array(1=>'page'),
+				'project/list/%d'
+			);
+			
 			$route_user_login = new Zend_Controller_Router_Route_Regex(
 				'user/login',
 				array(
@@ -270,12 +282,14 @@ class SP_Application{
 			);
 			
 			$route_user_list = new Zend_Controller_Router_Route_Regex(
-				'user/list',
+				'user/list/(\d+)',
 				array(
 					'module'=>'user',
-					'controller'=>'index',
-					'action'=>'list'
-				)
+					'controller'=>'Index',
+					'action'=>'list',
+				),
+				array( 1 => 'page'),
+				'user/list/%d'
 			);
 			
 			$route_user_edit = new Zend_Controller_Router_Route_Regex(
@@ -310,6 +324,7 @@ class SP_Application{
 			
 			self::$_router->addRoutes(array(
 						$route_project,
+						//$route_project_list,
 						$route_user_login,
 						$route_user_logout,
 						$route_user_list,
@@ -376,6 +391,13 @@ class SP_Application{
 			self::$_layout->setLayoutPath(SP_APP_PATH . DIRECTORY_SEPARATOR . 'layouts')
 						  ->setLayout('layout');
 		}
+	}
+	/**
+	 * setting custom prefix and register need action helpers
+	 */
+	protected function _setActionHelper(){
+		Zend_Controller_Action_HelperBroker::addPrefix('SP_Controller_Action_Helper');
+		Zend_Controller_Action_HelperBroker::getStaticHelper('Paginator');
 	}
 	
 	protected function _setTranslate(){

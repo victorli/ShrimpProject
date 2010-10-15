@@ -33,6 +33,9 @@ class SP_Form_Login extends Zend_Form{
 	}
 	
 	public function init(){
+		
+		$this->addPrefixPath('SP_Form_Decorator','SP/Form/Decorator/','decorator');
+		
 		$this->_view = SP_Application::getView();
 		$this->setName('Form_Login');
 		$this->setAttrib('class','Form_Edit');
@@ -58,20 +61,18 @@ class SP_Form_Login extends Zend_Form{
 		$this->clearDecorators();
 		$this->setDecorators(array(
 			'FormElements',
-			array('HtmlTag',array('tag'=>'ul')),
-			'Form'
+			'Form',
+			array('OuterBox',array('attrs'=>array('class'=>'form login_form'),'title'=>'Login','placement'=>'PREPEND'))
 			)
 		);
 		
 		$this->setElementDecorators(array(
 			'ViewHelper',
-			array('Label',array('separator'=>' ')),
-			array('HtmlTag',array('tag'=>'li'))
+			array('data'=>'HtmlTag',array('tag'=>'div','class'=>'form_row')),
+			array('Label',array('tag'=>'div','class'=>'form_label'))
 		));
 		
 		$btnLogin->removeDecorator('Label');
-		
-		$this->setDecorators(array(array('ViewScript',array('viewScript'=>'loginForm.phtml'))));
 	}
 }
 

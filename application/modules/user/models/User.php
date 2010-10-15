@@ -26,7 +26,7 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_User_Model_User{
+class SP_User_Model_User extends SP_Model_Abstract{
 
 	protected $_table_name = 'users';
 	protected $id = null;
@@ -52,6 +52,14 @@ class SP_User_Model_User{
 		}
 		
 		$this->clear();
+	}
+	
+	public function getTableName(){
+		return $this->_table_name;
+	}
+	
+	public function setTableName($name){
+		$this->_table_name = $name;
 	}
 	/**
 	 * 
@@ -158,12 +166,12 @@ class SP_User_Model_User{
 	/**
 	 * 
 	 * @param $id primary key
-	 * @return SP_User_Model_User
+	 * @return Zend_Db_Table_Row
 	 */
 	public function retrive($id){
 		$row = $this->table->find($id);
-		$this->_walk($row);
-		return $this;
+		$this->_walk($row[0]);
+		return $row[0];
 	}
 	/**
 	 * @return rows array
@@ -173,21 +181,6 @@ class SP_User_Model_User{
 				$this->table->select()
 						    ->from($this->_table_name,array('id','name','pwd','role','true_name'))
 				)->toArray();
-	}
-	/**
-	 * 
-	 * @param Zend_DB_Table_Row $rows
-	 * 
-	 * @return void
-	 */
-	protected function _walk($row){
-		if($row instanceof Zend_Db_Table_Row){
-			foreach($row as $field=>$value){
-				$this->$field = $value;
-			}
-		}else{
-			trigger_error('Error $row type');
-		}
 	}
 	
 	public function clear(){

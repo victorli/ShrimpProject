@@ -38,6 +38,13 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 	protected $footbar = "";
 	protected $even = null;
 	protected $odd = null;
+	protected $colOpts = false;
+	protected $operations = null;
+	/**
+	 * 
+	 * @var Zend_Paginator
+	 */
+	protected $paginator = null;
 	
 	public function __construct(){
 		$this->even = "tr_even";
@@ -58,11 +65,27 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 		
 		return $this;
 	}
+	/**
+	 * @example array('edit'=>'/user/index/edit/%d','delete'=>'/user/index/delete/%d')
+	 * @param array $data 
+	 * @return SP_View_Helper_HtmlTable
+	 */
+	public function setOperations(Array $data){
+		if(!is_array($data))
+			throw new Exception('An array should be provided');
+		foreach($data as $key=>$path){
+			$this->operations[$key] = $path;
+		}
+		return $this;
+	}
 	
 	public function headTitle($data){
 		if(!is_array($data)){
 			throw new Exception('$data should be an array');
-		}	
+		}
+		
+		if($this->colOpts && is_null($this->operations))
+			throw new Exception('Please call setOperations first');
 		
 		if($this->checkbox){
 			$this->headTitle .="<TH width='20'>&nbsp;</TH>";
@@ -77,14 +100,26 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 			}
 		}
 		
+		if($this->colOpts){
+			$this->headTitle .= "<TH>&nbsp;</TH>";
+		}
+		
 		$this->headTitle .="</TR>";
 		
 		return $this;
 	}
 	
 	public function body($data){
+		if($data instanceof Zend_Paginator){
+			$this->paginator = $data;
+			$data = (Array)$data->getCurrentItems();
+		}
+		
 		if(!is_array($data))
 			throw new Exception('$data should be an array');
+			
+		if($this->colOpts && is_null($this->operations))
+			throw new Exception('Please call setOperations first');
 		
 		foreach($data as $key=>$row){
 			$this->body .= "<TR ";
@@ -100,6 +135,15 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 				$this->body .="<TD>".$value."</TD>";
 			}
 			
+			if($this->colOpts){
+				$this->body .="<TD align='center'>";
+				foreach($this->operations as $key=>$path){
+					$this->body .="<a href='".sprintf($path,$row['id'])."'>$key</a>&nbsp;";
+				}
+				
+				$this->body .="</TD>";
+			}
+			
 			$this->body .="</TR>";
 		}
 		
@@ -108,25 +152,43 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 	}
 	
 	public function footBar($data){
-		if(!$this->checkbox)
-			return $this;
-		$this->footbar .="<TR class='footBar'><TD colspan='".count($this->headTitleArray)."'>".
-						"<img src='../theme/default/images/arrowLeft.png' />".
-						"<a href='#' onclick='$(\"[class=row_checkbox]:checkbox\").attr(\"checked\",\"checked\")'>Check All</a>".
-						"&nbsp;/&nbsp;".
-						"<a href='#' onclick='$(\"[class=row_checkbox]:checkbox\").removeAttr(\"checked\")'>Uncheck All</a>";
-		if(is_array($data)){
-			$this->footbar .= "&nbsp;&nbsp;<select>".
-							  "<option>".Zend_Registry::get('Zend_Translate')->_('With Selected')."</option>";
-			foreach($data as $label=>$action){
-				$this->footbar .="<option id='$action'>$label</option>";
+		$colspan = count($this->headTitleArray);
+		if($this->checkbox)
+			$colspan +=1;
+		$this->footbar .="<tfoot>";
+		$this->footbar .="<TR class='footBar'><TD colspan='".$colspan."'>";
+		if($this->checkbox){
+			$this->footbar .="<img src='/theme/default/images/arrowLeft.png' />".
+							"<a href='#' onclick='$(\"[class=row_checkbox]:checkbox\").attr(\"checked\",\"checked\")'>Check All</a>".
+							"&nbsp;/&nbsp;".
+							"<a href='#' onclick='$(\"[class=row_checkbox]:checkbox\").removeAttr(\"checked\")'>Uncheck All</a>";
+			if(is_array($data)){
+				$this->footbar .= "&nbsp;&nbsp;<select>".
+								  "<option>".Zend_Registry::get('Zend_Translate')->_('With Selected')."</option>";
+				foreach($data as $label=>$action){
+					$this->footbar .="<option id='$action'>$label</option>";
+				}
+				
+				$this->footbar .= "</select>";
 			}
-			
-			$this->footbar .= "</select>";
 		}
+		if(null !== $this->paginator)
+			$this->footbar .="<div style='position:relative;float:right;padding-right:10px;'>". $this->getPagination() ."</div>";
 		$this->footbar .= "</TD></TR>";
+		$this->footbar .= "</tfoot>";
 		
 		return $this;
+	}
+	
+	protected function getPagination($style = "Sliding"){
+		if(null !== $this->paginator){
+			if(null === $this->view)
+				$this->setView();
+				
+			return $this->view->paginationControl($this->paginator,$style,'paging_search.phtml');
+		}
+		
+		return "";
 	}
 	
 	public function __toString(){
@@ -135,9 +197,10 @@ class SP_View_Helper_HtmlTable extends Zend_View_Helper_Abstract{
 				$this->headTitle.
 				"</thead>".
 				"<tbody ".$this->tbody.">".
-				$this->body.
-				$this->footbar.
-				"</tbody>".
+				$this->body;
+		if($this->checkbox || null !== $this->paginator)
+			$html .= $this->footbar;
+		$html .="</tbody>".
 				"</table>";
 				
 		return $html;

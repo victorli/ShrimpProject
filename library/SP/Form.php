@@ -28,45 +28,19 @@ or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
 class SP_Form extends Zend_Form{
 	
-	public function __construct($options = null){
-		parent::__construct($options);
-	}
+	protected $formDecorators = array('FormElements',
+									  'Form');
+	protected $elementDecorators = array('ViewHelper',
+										 array('Description',array('tag'=>'span','class'=>'form_description')),
+										 array('data'=>'HtmlTag',array('tag'=>'div','class'=>'form_row')),
+										 array('Label',array('tag'=>'div','class'=>'form_label')));
 	
 	public function init(){
-		$this->clearDecorators();
-		$this->setDecorators($this->getFormDecorators());
-		$this->setElementDecorators($this->getElementDecorators());
-		
-		if(null === $this->_view)
-			$this->_view = SP_Application::getView();
-	}
-	
-	protected function getFormDecorators(){
-		return array(
-			'FormElements',
-			array('HtmlTag',array('tag'=>'table')),
-			'Form',
-		);
-	}
-	
-	protected function getElementDecorators(){
-		return array(
-			'ViewHelper',
-			'Errors',
-			'Description',
-			array(array('data'=>'HtmlTag'),array('tag'=>'td','class'=>'element')),
-			array('Label',array('tag'=>'td')),
-			array(array('row'=>'HtmlTag'),array('tag'=>'tr')),
-		);
-	}
-	
-	protected function getButtonDecorators(){
-		return array(
-			'ViewHelper',
-			array(array('data'=>'HtmlTag'),array('tag'=>'td','class'=>'element')),
-			array(array('label'=>'HtmlTag'),array('tag'=>'td','placement'=>'prepend')),
-			array(array('row'=>'HtmlTag'),array('tag'=>'tr')),
-		);
+		$this->setView(SP_Application::getView());
+		$this->addPrefixPath('SP_Form_Decorator','SP/Form/Decorator/','decorator');
+		$this->setDisableLoadDefaultDecorators(true);
+		$this->setDecorators($this->formDecorators);
+		$this->setElementDecorators($this->elementDecorators);
 	}
 }
 

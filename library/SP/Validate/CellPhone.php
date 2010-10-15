@@ -26,37 +26,34 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_View_Helper_ActionBar extends Zend_View_Helper_Abstract{
+class SP_Validate_CellPhone extends Zend_Validate_Abstract{
 	
-	protected $type = 'a';
-	protected $action_str = "";
+	const NOT_PHONE = "notPhone";
+	const INVALID_PHONE = "invalidCellPhone";
+	const STRING_EMPTY = "stringEmpty";
 	
-	public function __construct(){}
+	protected $_messageTemplates = array(
+		self::NOT_PHONE 	=> "'%value%' is not a phone number",
+		self::INVALID_PHONE => "''%value% is not a cell phone number",
+		self::STRING_EMPTY	=> "Please provide a phone number"
+	);
 	
-	public function actionBar($options = null){
-		if(is_null($options))
-			return $this;
-			
-		if(!is_array($options))
-			throw new Exception('Array needed for the argument');
-		if(key_exists('type',$options))
-			$this->type = $options['type'];
-
-		if(!key_exists('actions',$options))
-			throw new Exception('Key "actions" needed');
-		foreach($options['actions'] as $action){
-			if($this->type == 'a'){
-				$this->action_str .="<a href='".$action['link']."'>".$action['label']."</a>&nbsp;&nbsp;";
-			}else if($this->type == 'button'){
-				$this->action_str .="<button onclick=\"javascript:window.location='".$action['link']."'\">".$action['label']."</button>&nbsp;&nbsp;";
-			}
+	public function isValid($value){
+		if(!is_string($value) && !is_int($value)){
+			$this->_error(self::NOT_PHONE);
+			return false;
 		}
 		
-		return $this;
-	}
-	
-	public function __toString(){
-		return "<div class='action-bar'>".$this->action_str."</div>";
+		$this->_setValue($value);
+		$numbersOnly = preg_replace("[^0-9]","",$value);
+		if(strlen($numbersOnly) != strlen($value) 
+			|| !preg_match('/^(13|15|18)\d{9}$/',$numbersOnly)){
+				
+			$this->_error(self::INVALID_PHONE);
+			return false;
+		}
+		
+		return true;
 	}
 }
 

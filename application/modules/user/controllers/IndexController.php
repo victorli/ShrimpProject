@@ -29,14 +29,16 @@ or implied, of VictorLi (luckylzs@gmail.com).
 class User_IndexController extends SP_Controller_Action{
 	
 	public function indexAction(){
-		$this->_redirect('/user/list');
+		$this->_redirect('/user/index/list/');
 	}
 	
 	public function loginAction(){
 		if(Zend_Auth::getInstance()->hasIdentity())
 			$this->_redirect('/');
+		
+		$form = new SP_Form_Login();
 		$request = $this->getRequest();
-		if($request->isPost()){
+		if($request->isPost() && $form->isValid($_POST)){
 			$username = $request->getParam('name');
 			$pwd = $request->getParam('pwd');
 			
@@ -55,7 +57,6 @@ class User_IndexController extends SP_Controller_Action{
 			}
 		}
 		
-		$form = new SP_Form_Login();
 		$this->view->form = $form;
 		$this->view->title = $this->translator->_('Login');
 		
@@ -66,10 +67,10 @@ class User_IndexController extends SP_Controller_Action{
 		$form = new SP_Form_User_Edit();
 		$id = $this->getRequest()->getParam('id');
 		if(is_numeric($id)){
-			$this->view->title = "Update User";
+			$user = new SP_User_Model_User();
+			$this->view->form = $form->populate($user->retrive($id)->toArray());
 		}else{
 			$this->view->form = $form;
-			$this->view->title = "Create User";
 		}
 		
 		$this->getResponse()->insert('content',$this->render(null,null,true));
@@ -81,15 +82,18 @@ class User_IndexController extends SP_Controller_Action{
 	}
 	
 	public function listAction(){
-		$user = new SP_User_Model_User();
+		$user = new SP_User_Model_User();				  
 		$this->view->htmlTable(array(
-											'table'=>array('class'=>'sorttable','width'=>'100%','cellpadding'=>'2','cellspacing'=>'1'),
-											'thead'=>array('class'=>'thead',),
+											'table'=>array('class'=>'sortable','cellpadding'=>2,'cellspacing'=>1,'width'=>'100%'),
+											'thead'=>array('class'=>'thead','title'=>'click to sort'),
 											'tbody'=>array('class'=>'tbody'),
-											'checkbox'=>true
+											'checkbox'=>true,
+											'colOpts'=>true,
 											))
+					->setView($this->view)
+					->setOperations(array('edit'=>'/user/index/edit/id/%d',))					
 					->headTitle(array('Id','Name','Pwd','Role','Real Name'))
-				  	->body($user->fetchAll())
+				  	->body($this->_helper->Paginator($user->fetchAll(),true,15,$this->_getParam('page',1)))
 				  	->footBar(array('Delete'=>'delete','Export'=>'export'));
 		
 		$this->view->actionBar(array(
@@ -99,6 +103,8 @@ class User_IndexController extends SP_Controller_Action{
 				array('label'=>'Filters','link'=>'/user/filters')
 			)
 		));
+		
+		
 		$this->getResponse()->insert('content',$this->render(null,null,true));
 	}
 	
@@ -115,7 +121,7 @@ class User_IndexController extends SP_Controller_Action{
 					 ->setTrueName($form->getValue('true_name'))
 					 ->save();
 				
-				$this->_redirect('/user/list');
+				$this->_redirect('/user/list/1');
 			}else{
 				$this->view->form = $form->populate($_POST);
 			}

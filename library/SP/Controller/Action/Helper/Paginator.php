@@ -26,37 +26,22 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_View_Helper_ActionBar extends Zend_View_Helper_Abstract{
+class SP_Controller_Action_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract{
 	
-	protected $type = 'a';
-	protected $action_str = "";
-	
-	public function __construct(){}
-	
-	public function actionBar($options = null){
-		if(is_null($options))
-			return $this;
-			
-		if(!is_array($options))
-			throw new Exception('Array needed for the argument');
-		if(key_exists('type',$options))
-			$this->type = $options['type'];
-
-		if(!key_exists('actions',$options))
-			throw new Exception('Key "actions" needed');
-		foreach($options['actions'] as $action){
-			if($this->type == 'a'){
-				$this->action_str .="<a href='".$action['link']."'>".$action['label']."</a>&nbsp;&nbsp;";
-			}else if($this->type == 'button'){
-				$this->action_str .="<button onclick=\"javascript:window.location='".$action['link']."'\">".$action['label']."</button>&nbsp;&nbsp;";
-			}
-		}
-		
-		return $this;
-	}
-	
-	public function __toString(){
-		return "<div class='action-bar'>".$this->action_str."</div>";
+	/**
+	 * 助手类中还可以包含一个direct()方法，如果定义了该方法，
+	 * 就可以将助手视作助手经纪人的一个方法，以便简单的、一次性的使用助手
+	 * 
+	 * @param array $data
+	 * @param bool $cache
+	 * @param int $pageSize
+	 * @param int $page
+	 */
+	public function direct($data,$cache=true,$pageSize=15,$page=1){
+		$paginator = Zend_Paginator::factory($data);
+		return $paginator->setCacheEnabled($cache)
+						 ->setItemCountPerPage($pageSize)
+						 ->setCurrentPageNumber($page);
 	}
 }
 

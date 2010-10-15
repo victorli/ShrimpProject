@@ -185,14 +185,16 @@ form ul li{
 }
 .error,.errors{
 	color:red;
+	font-weight:bold;
 }
 
-table.sorttable{
+table.sortable{
 	border:1px dotted gray;
 }
 
-thead{
+table.sortable thead{
 	background:url(images/titleBar.png) repeat-x;
+	cursor:pointer;
 }
 
 .tr_even{
@@ -201,15 +203,67 @@ thead{
 .tr_odd{
 	background-color:#e8f2fe;
 }
+.tr_even:hover,.tr_odd:hover{
+	background-color: #F18200;
+	color:white;
+}
 
 tr.footBar{
 	line-height:18px;
 }
 
 input[type=submit],input[type=button],button{
-	border:1px solid #1791AA;
+	border:1px solid #DE5400;
+	background-color:#F18200;
+	color:white;
+	font-family:"Arial Black";
+}
+
+input[type=text],input[type=password],select{
+	border:1px solid gray;
 }
 
 td{
 	vertical-align:top;
+}
+
+.form{
+	border:1px solid #BBB6A5;
+	background-color:#FAF7EE;
+	padding:5px 10px;
+	-moz-
+}
+
+.required
+{
+	background-image:url(images/required-field.png);
+	background-position:top right;
+	background-repeat:no-repeat;
+	padding-right:15px;
+}
+
+.login_form{
+	width:250px;
+}
+
+.form h3{
+	margin:0 0;
+	color:#E76200;
+}
+
+.form .form_row{
+	padding-bottom:5px;
+}
+
+.user_edit_form{
+	width:300px;
+}
+
+.form_description{
+	font-style:italic;
+	color:gray;
+}
+
+.action-bar{
+	padding-bottom:2px;
 }
