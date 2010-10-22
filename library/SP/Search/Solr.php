@@ -26,24 +26,40 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of VictorLi (luckylzs@gmail.com).
 ***********************************************************************************************************/
-class SP_Controller_Action_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract{
-	
-	/**
-	 * 助手类中还可以包含一个direct()方法，如果定义了该方法，
-	 * 就可以将助手视作助手经纪人的一个方法，以便简单的、一次性的使用助手
-	 * 
-	 * @param array $data
-	 * @param bool $cache
-	 * @param int $pageSize
-	 * @param int $page
-	 * @return Zend_Paginator
-	 */
-	public function direct($data,$cache=true,$pageSize=15,$page=1){
-		$paginator = Zend_Paginator::factory($data);
-		return $paginator->setCacheEnabled($cache)
-						 ->setItemCountPerPage($pageSize)
-						 ->setCurrentPageNumber($page);
+class SP_Search_Solr extends Apache_Solr_Service{
+
+	public function __construct($host = 'loclahost',$port = '8080',$path = '/solr'){
+		parent::__construct($host,$port,$path);
 	}
+	/**
+	 * make of Apache_Solr_Documents through an array
+	 * @param array $parts
+	 * @return Apache_Solr_Document Array
+	 */
+	public function arrayToDocument(Array $parts){
+		$documents = array();
+		if(!is_array($parts) || count($parts) == 0){
+			throw new Exception("parameter \$parts must be an array.");
+		}
+		
+		foreach($parts as $item => $fields){
+			$part = new Apache_Solr_Document();
+			foreach($fields as $key => $value){
+				if(is_array($value)){
+					foreach($value as $datum){
+						$part->setMultiValue($key,$datum);
+					}
+				}else{
+					$part->setField($key,$value);
+				}
+			}
+			$documents[] = $part;
+		}
+		
+		return $documents;
+	}
+	
+	
 }
 
 ?>

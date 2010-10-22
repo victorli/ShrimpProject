@@ -108,6 +108,8 @@ class SP_Application{
 		$autoloader = Zend_Loader_Autoloader::getInstance();
 		$autoloader->setFallbackAutoloader(false);
 		$autoloader->registerNamespace('SP_');
+		$autoloader->registerNamespace('Apache_');//for solr
+		
 		try {
             Zend_Session::start();
         } catch (Zend_Session_Exception $error) {
